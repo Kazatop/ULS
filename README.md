@@ -71,37 +71,40 @@ _Желательно, отразить диаграмму размещения,
 3. Книги, статьи, доклады или другие источники, которые повлияли на создание проекта.
 
 ## База данных
-    public static string connectionPath = @"Data Source=localhost;Initial Catalog=ULS;Integrated Security=True";
-    public static int accountId;
-
-    public static void ChangeConnectionPath(string newSource)
+    public static class Database
     {
-        connectionPath = $"Data Source={newSource};Initial Catalog=ULS;Integrated Security=True"; //Переменная подключения
-    }
+        public static string connectionPath = @"Data Source=localhost;Initial Catalog=ULS;Integrated Security=True"; //Переменная подключения
+        public static int accountId;
 
-    public static bool LoginConfirmation(string login, string password)
-    {
-        using (SqlConnection connection = new SqlConnection(connectionPath)) //Использование подключения
+        public static void ChangeConnectionPath(string newSource)
         {
-            connection.Open();
+            connectionPath = $"Data Source={newSource};Initial Catalog=ULS;Integrated Security=True";
+        }
 
-            string databaseCommand = "SELECT Login, Password, ID FROM Accounts"; //Создание команды
-
-            using (SqlCommand command = new SqlCommand(databaseCommand, connection)) //Инициализация команды
-            using (SqlDataReader reader = command.ExecuteReader()) //Инициализация ридера
+        public static bool LoginConfirmation(string login, string password)
+        {
+            using (SqlConnection connection = new SqlConnection(connectionPath)) //Использование подключения
             {
-                bool confirm = false;
+                connection.Open();
 
-                while (reader.Read()) //Обязательное чтение, иначе работать не будет
+                string databaseCommand = "SELECT Login, Password, ID FROM Accounts"; //Создание команды
+
+                using (SqlCommand command = new SqlCommand(databaseCommand, connection)) //Инициализация команды
+                using (SqlDataReader reader = command.ExecuteReader()) //Инициализация ридера
                 {
-                    if (reader["Login"].ToString() == login && reader["Password"].ToString() == password) //Чтение
+                    bool confirm = false;
+
+                    while (reader.Read()) //Обязательное чтение, иначе работать не будет
                     {
-                        accountId = Convert.ToInt32(reader["ID"]);
-                        confirm = true;
+                        if (reader["Login"].ToString() == login && reader["Password"].ToString() == password) //Чтение
+                        {
+                            accountId = Convert.ToInt32(reader["ID"]);
+                            confirm = true;
+                        }
                     }
+                    connection.Close();
+                    return confirm;
                 }
-                connection.Close();
-                return confirm;
             }
         }
     }
