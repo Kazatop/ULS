@@ -7,7 +7,7 @@ namespace ULS
     {
         public MainForm()
         {
-            InitializeComponent();
+            InitializeComponent(); //
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
