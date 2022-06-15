@@ -223,3 +223,87 @@ _Желательно, отразить диаграмму размещения,
     INSERT INTO ClientService(ClientID, ServiceID, StartTime)
     SELECT Client.ID, Service.ID, Sheet1$.StartTime FROM Client, Service, Sheet1$ 
     WHERE Sheet1$.Client = Client.FirstName AND Sheet1$.Service = Service.Title
+    
+## Капча pictureBox"ом
+    Для начала создадим пустой проект WinForm и добавим на нашу свежеиспеченную форму элементы PictureBox, TextBox и два элемента Button.
+    В коде проекта в класс Form1 добавим строку:
+
+    private string text = String.Empty;
+    Лень изменять стандартные имена, поэтому оговорим сразу что button1 будет отвечать за обновление картинки, а button2 за проверку ввода.
+
+    Теперь нужно написать функцию генерации изображения со случайным текстом. Это сможет сделать следующий код:
+
+    private Bitmap CreateImage(int Width, int Height)
+    {
+      Random rnd = new Random();
+      
+      //Создадим изображение
+      Bitmap result = new Bitmap(Width, Height);
+
+      //Вычислим позицию текста
+      int Xpos = rnd.Next(0, Width - 50);
+      int Ypos = rnd.Next(15, Height - 15);
+
+      //Добавим различные цвета
+      Brush[] colors = { Brushes.Black,
+                         Brushes.Red,
+                         Brushes.RoyalBlue,
+                         Brushes.Green };
+                
+       //Укажем где рисовать
+       Graphics g = Graphics.FromImage((Image)result);
+
+       //Пусть фон картинки будет серым
+       g.Clear(Color.Gray);
+
+       //Сгенерируем текст
+       text = String.Empty;
+       string ALF = "1234567890QWERTYUIOPASDFGHJKLZXCVBNM";
+       for (int i = 0; i < 5; ++i)
+         text += ALF[rnd.Next(ALF.Length)];
+
+       //Нарисуем сгенирируемый текст
+       g.DrawString(text,
+                    new Font("Arial", 15),
+                    colors[rnd.Next(colors.Length)],
+                    new PointF(Xpos, Ypos));
+                
+       //Добавим немного помех
+       /////Линии из углов
+       g.DrawLine(Pens.Black,
+                  new Point(0, 0),
+                  new Point(Width - 1, Height - 1));
+       g.DrawLine(Pens.Black,
+                  new Point(0, Height - 1),
+                  new Point(Width - 1, 0));
+       ////Белые точки
+       for (int i = 0; i < Width; ++i)
+        for (int j = 0; j < Height; ++j)
+         if (rnd.Next() % 20 == 0)
+          result.SetPixel(i, j, Color.White);
+
+        return result;
+    }
+    Вызовем данную функцию из события загрузки формы и события нажатия на кнопку button1:
+
+    private void Form1_Load(object sender, EventArgs e)
+    {
+      pictureBox1.Image = this.CreateImage(pictureBox1.Width, pictureBox1.Height);    
+    }
+
+    private void button1_Click(object sender, EventArgs e)
+    {
+      pictureBox1.Image = this.CreateImage(pictureBox1.Width, pictureBox1.Height);
+    }
+    На событие клика по второй кнопки повесим следующий код:
+
+    private void button2_Click(object sender, EventArgs e)
+    {
+      if (textBox1.Text == this.text)
+        MessageBox.Show("Верно!");
+      else
+        MessageBox.Show("Ошибка!");
+    }
+
+    Конечно, хранить сгенерированный текст в открытом виде не парвильно, но данная статья является наглядным примером реализации самой процедуры CAPTCHA теста, поэтому о защите мы говорить не будем.
+    Так же стоит заметить что данный код будет чувствителен к ригистру, поэтому все символы нужно будет вбивать большими буквами.
