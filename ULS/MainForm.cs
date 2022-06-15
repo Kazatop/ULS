@@ -178,7 +178,6 @@ namespace ULS
         {
             StorageAddForm storageAddForm = new StorageAddForm();
             storageAddForm.ShowDialog();
-
             UpdateTabPagesMainTab();
         }
 
