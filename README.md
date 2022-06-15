@@ -1,8 +1,6 @@
-# ULS
+# ULS - Учёт лекарств склада больницы
 
-**Описание**:  Поместите осмысленное, краткое и простое описание того, чего этот проект пытается достичь и почему это важно.
-Опишите проблемы, которые решает этот проект.
-Опишите, как это программное обеспечение может улучшить жизнь своей аудитории.
+**Описание**:  Программа для учёта лекарств больницы. Имеет возможность авторизации, просмотра позиций, добавления этих же позиций 
 
   - **Технологический стек**: Indicate the technological nature of the software, including primary programming language(s) and whether the software is intended as standalone or as a module in a framework or other ecosystem.
   - **Статус**:  Alpha, Beta, 1.1, etc. It's OK to write a sentence, too. The goal is to let interested people know where this project is at. This is also a good place to link to the [CHANGELOG](CHANGELOG.md).
@@ -71,3 +69,56 @@ _Желательно, отразить диаграмму размещения,
 1. Проекты, которые вас вдохновили
 2. Связанные проекты
 3. Книги, статьи, доклады или другие источники, которые повлияли на создание проекта.
+
+## База данных
+    public static string connectionPath = @"Data Source=localhost;Initial Catalog=ULS;Integrated Security=True";
+    public static int accountId;
+
+    public static void ChangeConnectionPath(string newSource)
+    {
+        connectionPath = $"Data Source={newSource};Initial Catalog=ULS;Integrated Security=True";
+    }
+
+    public static bool LoginConfirmation(string login, string password)
+    {
+        using (SqlConnection connection = new SqlConnection(connectionPath))
+        {
+            connection.Open();
+
+            string databaseCommand = "SELECT Login, Password, ID FROM Accounts";
+
+            using (SqlCommand command = new SqlCommand(databaseCommand, connection))
+            using (SqlDataReader reader = command.ExecuteReader())
+            {
+                bool confirm = false;
+
+                while (reader.Read())
+                {
+                    if (reader["Login"].ToString() == login && reader["Password"].ToString() == password)
+                    {
+                        accountId = Convert.ToInt32(reader["ID"]);
+                        confirm = true;
+                    }
+                }
+                connection.Close();
+                return confirm;
+            }
+        }
+    }
+    
+## Заполнение DataTable    
+    public static void DisplayAllUnactiveInvoices(DataGridView dataGrid)
+    {
+        using (SqlConnection connection = new SqlConnection(connectionPath))
+        {
+            connection.Open();
+            DataTable dataTable = new DataTable();
+
+            string command = "SELECT Invoice.ID AS Номер, ID_Invoice AS 'Номер накладной', Date AS Дата FROM Unactive_Invoice, Invoice WHERE Unactive_Invoice.ID = Invoice.ID";
+
+            SqlDataAdapter adapter = new SqlDataAdapter(command, connection);
+            adapter.Fill(dataTable);
+            dataGrid.DataSource = dataTable;
+            connection.Close();
+        }
+    }
