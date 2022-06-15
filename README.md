@@ -211,3 +211,15 @@ _Желательно, отразить диаграмму размещения,
             }
         }
     }
+    
+## Код для импорта ID с сервисов и клиентов
+    USE Database
+    INSERT INTO ClientService (ClientID, ServiceID, StartTime)
+    SELECT client.ID, service.ID, НазваниеТаблицы.[DateTime] FROM НазваниеТаблицы, [Client] c, [Service] s
+    WHERE НазваниеТаблицы.[Service]=s.Title AND НазваниеТаблицы.client=c.FirstName
+
+
+    USE Database
+    INSERT INTO ClientService(ClientID, ServiceID, StartTime)
+    SELECT Client.ID, Service.ID, Sheet1$.StartTime FROM Client, Service, Sheet1$ 
+    WHERE Sheet1$.Client = Client.FirstName AND Sheet1$.Service = Service.Title
