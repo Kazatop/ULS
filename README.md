@@ -76,25 +76,25 @@ _Желательно, отразить диаграмму размещения,
 
     public static void ChangeConnectionPath(string newSource)
     {
-        connectionPath = $"Data Source={newSource};Initial Catalog=ULS;Integrated Security=True";
+        connectionPath = $"Data Source={newSource};Initial Catalog=ULS;Integrated Security=True"; //Переменная подключения
     }
 
     public static bool LoginConfirmation(string login, string password)
     {
-        using (SqlConnection connection = new SqlConnection(connectionPath))
+        using (SqlConnection connection = new SqlConnection(connectionPath)) //Использование подключения
         {
             connection.Open();
 
-            string databaseCommand = "SELECT Login, Password, ID FROM Accounts";
+            string databaseCommand = "SELECT Login, Password, ID FROM Accounts"; //Создание команды
 
-            using (SqlCommand command = new SqlCommand(databaseCommand, connection))
-            using (SqlDataReader reader = command.ExecuteReader())
+            using (SqlCommand command = new SqlCommand(databaseCommand, connection)) //Инициализация команды
+            using (SqlDataReader reader = command.ExecuteReader()) //Инициализация ридера
             {
                 bool confirm = false;
 
-                while (reader.Read())
+                while (reader.Read()) //Обязательное чтение, иначе работать не будет
                 {
-                    if (reader["Login"].ToString() == login && reader["Password"].ToString() == password)
+                    if (reader["Login"].ToString() == login && reader["Password"].ToString() == password) //Чтение
                     {
                         accountId = Convert.ToInt32(reader["ID"]);
                         confirm = true;
@@ -107,18 +107,57 @@ _Желательно, отразить диаграмму размещения,
     }
     
 ## Заполнение DataTable    
-    public static void DisplayAllUnactiveInvoices(DataGridView dataGrid)
+    public static void DisplayAllUnactiveInvoices(DataGridView dataGrid) //Получение ссылки на таблицу для обратной отправки заполненой
     {
         using (SqlConnection connection = new SqlConnection(connectionPath))
         {
             connection.Open();
-            DataTable dataTable = new DataTable();
+            DataTable dataTable = new DataTable(); //Создание таблицы для заполнения
 
             string command = "SELECT Invoice.ID AS Номер, ID_Invoice AS 'Номер накладной', Date AS Дата FROM Unactive_Invoice, Invoice WHERE Unactive_Invoice.ID = Invoice.ID";
 
-            SqlDataAdapter adapter = new SqlDataAdapter(command, connection);
-            adapter.Fill(dataTable);
-            dataGrid.DataSource = dataTable;
+            SqlDataAdapter adapter = new SqlDataAdapter(command, connection); //Создание адаптера
+            adapter.Fill(dataTable); //Заполнение таблицы адаптером
+            dataGrid.DataSource = dataTable; //Присвоение ссылки таблицей на заполненную
             connection.Close();
         }
+    }
+    
+## Получения списка больниц
+    public static List<string> HospitalNames() //Создание списка
+        {
+            using (SqlConnection connection = new SqlConnection(connectionPath))
+            {
+                connection.Open();
+
+                string databaseCommand = $"SELECT Name FROM Hospital";
+
+                using (SqlCommand command = new SqlCommand(databaseCommand, connection))
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    List<string> hospitalNames = new List<string>();
+
+                    while (reader.Read())
+                    {
+                        hospitalNames.Add(reader["Name"].ToString());
+                    }
+
+                    connection.Close();
+                    return hospitalNames;
+                }
+            }
+        }
+        
+## Инициализация списка
+    Employee employee = Database.EmployeeGetInformation();
+
+## Создание класса / структуры для списка
+    public class Employee
+    {
+        public string firstName;
+        public string lastName;
+        public string patronymic;
+        public string photoPath;
+        public string privileges;
+        public string post;
     }
