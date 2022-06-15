@@ -68,7 +68,6 @@
             this.StorageAddButton = new System.Windows.Forms.Button();
             this.StorageLabel = new System.Windows.Forms.Label();
             this.StorageGridView = new System.Windows.Forms.DataGridView();
-            this.exitButton = new System.Windows.Forms.Button();
             this.EmployeeGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.EmployeePictureBox)).BeginInit();
             this.MainTabControl.SuspendLayout();
@@ -580,15 +579,6 @@
             this.StorageGridView.Size = new System.Drawing.Size(885, 370);
             this.StorageGridView.TabIndex = 6;
             // 
-            // exitButton
-            // 
-            this.exitButton.Location = new System.Drawing.Point(905, 149);
-            this.exitButton.Name = "exitButton";
-            this.exitButton.Size = new System.Drawing.Size(144, 23);
-            this.exitButton.TabIndex = 2;
-            this.exitButton.Text = "Exit";
-            this.exitButton.UseVisualStyleBackColor = true;
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -596,7 +586,6 @@
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(1055, 618);
-            this.Controls.Add(this.exitButton);
             this.Controls.Add(this.MainTabControl);
             this.Controls.Add(this.EmployeeGroupBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -676,7 +665,6 @@
         private System.Windows.Forms.Button CompletedInvoicesReportButton;
         private System.Windows.Forms.Button AllInvoicesReportButton;
         private System.Windows.Forms.Button StorageReportButton;
-        private System.Windows.Forms.Button exitButton;
     }
 }
 
