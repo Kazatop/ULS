@@ -307,3 +307,78 @@ _Желательно, отразить диаграмму размещения,
 
     Конечно, хранить сгенерированный текст в открытом виде не парвильно, но данная статья является наглядным примером реализации самой процедуры CAPTCHA теста, поэтому о защите мы говорить не будем.
     Так же стоит заметить что данный код будет чувствителен к ригистру, поэтому все символы нужно будет вбивать большими буквами.
+
+## Капча вариант 2
+    namespace TestApp
+    {
+        public partial class Form1 : Form
+        {
+            public Form1()
+            {
+                InitializeComponent();
+
+
+            }
+
+            private string _captchaCode = string.Empty;
+
+            public Bitmap GenerateCaptcha(int Width, int Height)
+            {
+                Random random = new Random();
+
+                Bitmap captchaImage = new Bitmap(Width, Height);
+
+                int Xpos = random.Next(0, Width-160);
+                int Ypos = random.Next(0, Height-50);
+
+                Brush[] colors = { Brushes.Black, Brushes.Red, Brushes.Purple, Brushes.Green, Brushes.Yellow, Brushes.Wheat };
+
+                Graphics graphics = Graphics.FromImage(captchaImage);
+
+                graphics.Clear(Color.Gray);
+
+                _captchaCode = string.Empty;
+                string alphabet = "0123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm";
+
+                for (int i = 0; i < 6; i++)
+                {
+                    _captchaCode += alphabet[random.Next(alphabet.Length)];
+                }
+
+                graphics.DrawString(_captchaCode, new Font("Arial", 32, FontStyle.Italic), colors[random.Next(colors.Length)], new PointF(Xpos, Ypos));
+
+                graphics.DrawLine(Pens.Black, new Point(0, 0), new Point(Width - 1, Height - 1));
+                graphics.DrawLine(Pens.Black, new Point(0, Height - 1), new Point(Width - 1, 0));
+
+                for (int i = 0; i < Width; i++)
+                {
+                    for (int j = 0; j < Height; j++)
+                    {
+                        if (random.Next() % 20 == 0)
+                        {
+                            captchaImage.SetPixel(i, j, Color.White);
+                        }
+                    }
+                }
+
+                return captchaImage;
+            }
+
+            private void GenerateCaptchaButton_Click(object sender, EventArgs e)
+            {
+                captchaPictureBox.Image = GenerateCaptcha(captchaPictureBox.Width, captchaPictureBox.Height);
+            }
+
+            private void CheckCaptchaButton_Click(object sender, EventArgs e)
+            {
+                if (captchaCheckTextBox.Text == _captchaCode)
+                {
+                    MessageBox.Show("Correct", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Incorrect", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+    }
