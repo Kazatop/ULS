@@ -37,6 +37,11 @@ namespace ULS
                 StorageReportButton.Enabled = false;
             }
 
+            if (employee.post == "Работник склада")
+            {
+                CreateUnactiveInvoiceButton.Enabled=false;
+            }
+
             UpdateTabPagesMainTab();
         }
 
@@ -81,6 +86,7 @@ namespace ULS
         {
             if (UnactiveInvoiceGridView.RowCount == 0)
             {
+                MessageBox.Show("Вы не выбрали накладную", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }    
             if (UnactiveInvoiceGridView.SelectedCells != null)
@@ -119,6 +125,7 @@ namespace ULS
         {
             if (ActiveInvoiceGridView.RowCount == 0)
             {
+                MessageBox.Show("Вы не выбрали накладную", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             if (ActiveDrugsInvoiceGridView.SelectedCells != null && ActiveDrugsInvoiceGridView.RowCount != 0)
